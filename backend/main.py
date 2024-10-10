@@ -3,8 +3,9 @@ from typing import List, Union
 
 import uvicorn
 from fastapi import Depends, FastAPI, HTTPException, Query
+from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, field_validator
-from sqlalchemy import String, or_
+from sqlalchemy import String, func, or_
 from sqlalchemy.orm import Session
 
 import models
@@ -21,6 +22,18 @@ def get_db():
 
 
 app = FastAPI(title="Search Interface", version=1.0)
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # Change this to your frontend URL
+    allow_credentials=True,
+    allow_methods=[
+        "*"
+    ],  # Allow specific methods, or use ["GET", "POST", etc.]
+    allow_headers=[
+        "*"
+    ],  # Allow specific headers, or use ["Content-Type", "Authorization", etc.]
+)
 
 models.Base.metadata.create_all(bind=engine)
 
@@ -46,44 +59,47 @@ class PassportSchema(BaseModel):
         orm_mode = True
 
 
-@app.get("/passports", response_model=List[PassportSchema])
-async def search_passports(
+@app.get("/", response_model=List[PassportSchema])
+async def search(
     search: str = Query(..., min_length=1, description="Search term"),
+    passports: bool = Query(..., description="Include passports"),
+    ids: bool = Query(..., description="Include ids"),
     db: Session = Depends(get_db),
 ):
-    search_term = f"%{search}%"
+    search_term = f"%{search}%".lower()
+    results = []
 
-    # Construct the filter conditions
-    filters = or_(
-        models.Passport.personal_number.ilike(search_term),
-        models.Passport.passport_number.ilike(search_term),
-        models.Passport.first_name.ilike(search_term),
-        (
-            models.Passport.middle_name.ilike(search_term)
-            if models.Passport.middle_name is not None
-            else False
-        ),
-        models.Passport.last_name.ilike(search_term),
-        models.Passport.place_of_birth.ilike(search_term),
-        models.Passport.place_of_living.ilike(search_term),
-        models.Passport.phone_number.cast(String).ilike(search_term),
-    )
-
-    results = db.query(models.Passport).filter(filters).all()
-
-    if not results:
-        raise HTTPException(
-            status_code=404,
-            detail="No passports found matching the search criteria.",
+    if passports:
+        # Construct the filter conditions
+        passports_filter = or_(
+            models.Passport.personal_number.ilike(search_term),
+            models.Passport.passport_number.ilike(search_term),
+            models.Passport.first_name.ilike(search_term),
+            (
+                models.Passport.middle_name.ilike(search_term)
+                if models.Passport.middle_name is not None
+                else False
+            ),
+            models.Passport.last_name.ilike(search_term),
+            func.lower(models.Passport.place_of_birth).contains(search_term),
+            func.lower(models.Passport.place_of_living).contains(search_term),
+            func.lower(models.Passport.phone_number.cast(String)).contains(
+                search_term
+            ),
         )
 
+        passports_result = (
+            db.query(models.Passport)
+            .filter(passports_filter)
+            .distinct(models.Passport.personal_number)
+            .all()
+        )
+        results.extend(passports_result)
+
+    if ids:
+        pass
+
     return results
-
-
-@app.get("/")
-async def get_main():
-
-    return {"message": "Hello world"}
 
 
 if __name__ == "__main__":

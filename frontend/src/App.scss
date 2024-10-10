@@ -1,0 +1,119 @@
+.App {
+  //text-align: center;
+  width: 100%;
+
+  #search_container {
+    position: sticky;
+    top: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 20px;
+
+    padding: 20px 0 20px 0;
+
+    #search_field {
+      border: 1px solid #008000;
+      width: 570px;
+      height: 60px;
+      font-size: 25px;
+      border-radius: 15px;
+      padding: 0 10px 0 10px;
+      color: #008000;
+      outline: none;
+      transition: width 0.2s;
+
+      &:focus {
+        width: 600px;
+      }
+    }
+
+    #search_button {
+      border: 1px solid #008000;
+      border-radius: 15px;
+
+      background: white;
+      font-weight: bold;
+      color: #008000;
+
+      height: 50px;
+      width: 100px;
+      padding: 10px;
+      font-size: 17px;
+
+      transition: background-color 0.3s, color 0.3s;
+      cursor: pointer;
+
+      &:hover {
+        background-color: #008000;
+        color: white;
+      }
+    }
+    #search_filter_container {
+      text-align: center;
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 20px;
+    }
+  }
+
+  #results_container {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+
+    #result_items_container {
+      padding-top: 20px;
+      width: 50%;
+
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 20px;
+
+      .result_item {
+        width: 95%;
+        box-sizing: border-box;
+        border: 1px solid #dadada;
+        box-shadow: 3px 3px 7px #dadada;
+        border-radius: 4px;
+        padding: 20px;
+        cursor: pointer;
+      }
+    }
+    #selected_item_container {
+      position: sticky;
+      top: 140px;
+      margin-top: 20px;
+      width: 50%;
+
+      .grid-container {
+        display: 1px solid #dadada;
+        box-shadow: 3px 3px 5px #dadada;
+        border-radius: 3px;
+        padding: 10px 5px;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        margin: 0 15px 0 15px;
+        gap: 0px;
+        transition: box-shadow 0.3s;
+
+        &:hover {
+          box-shadow: 3px 3px 10px #dadada;
+        }
+
+        .grid-item {
+          margin: 0 0 10px 0;
+        }
+        .grid-item-key {
+          text-align: right;
+          margin-right: 30%;
+        }
+      }
+    }
+  }
+}
