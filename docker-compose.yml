@@ -1,0 +1,41 @@
+services:
+  backend:
+    build:
+      context: ./backend
+    container_name: pii_search_backend
+    restart: always
+    ports:
+      - "1111:1111"
+    networks:
+      - pii_search_network
+    depends_on:
+      - db
+
+  frontend:
+    build:
+      context: ./frontend
+    container_name: pii_search_frontend
+    restart: always
+    ports:
+      - "8888:8888"
+    networks:
+      - pii_search_network
+
+  db:
+    image: postgres:17
+    container_name: pii_search_db
+    restart: always
+    environment:
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_DB=${DB_NAME}
+    ports:
+      - "8889:5432"
+    volumes:
+      - ../pid_data:/var/lib/postgresql/data
+    networks:
+      - pii_search_network
+
+networks:
+  pii_search_network:
+    driver: bridge
