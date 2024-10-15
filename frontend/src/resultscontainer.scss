@@ -16,6 +16,9 @@
     #summary_card {
       color: gray;
       text-decoration: underline;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
     }
 
     .result_item,
@@ -28,10 +31,20 @@
       padding: 20px;
       cursor: pointer;
     }
+    .result_item {
+      display: flex;
+      gap: 10px;
+
+      .item_type {
+        color: gray;
+        font-style: italic;
+        margin-left: auto;
+      }
+    }
   }
   #selected_item_container {
     position: sticky;
-    top: 140px;
+    top: 150px;
     margin-top: 20px;
     width: 50%;
 

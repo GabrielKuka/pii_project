@@ -14,6 +14,13 @@ const ResultsContainer = ({ searchQuery, searchResults }) => {
         {searchResults && (
           <div id={"summary_card"}>
             <label>{searchResults.length} total search results.</label>
+            <label>
+              {searchResults?.filter((i) => i.type === "passport").length}{" "}
+              passports found.
+            </label>
+            <label>
+              {searchResults?.filter((i) => i.type === "ID").length} ids found.
+            </label>
           </div>
         )}
         {searchResults &&
@@ -29,9 +36,12 @@ const ResultsContainer = ({ searchQuery, searchResults }) => {
                     : "none",
               }}
             >
-              <label>{item.first_name}</label>{" "}
-              {item.middle_name && <label>{item.middle_name}</label>}
-              <label>{item.last_name}</label>
+              <label className={"first_name"}>{item.first_name}</label>{" "}
+              {item.middle_name && (
+                <label className={"middle_name"}>{item.middle_name}</label>
+              )}
+              <label className={"last_name"}>{item.last_name}</label>
+              <label className={"item_type"}>{item.type}</label>
             </div>
           ))}
       </div>
@@ -39,11 +49,22 @@ const ResultsContainer = ({ searchQuery, searchResults }) => {
         {activeItem && (
           <>
             <div className="grid-container">
-              <label className="grid-item-key">Personal Number</label>
-              <label className="grid-item">{activeItem.personal_number}</label>
-
-              <label className="grid-item-key">Passport Number</label>
-              <label className="grid-item">{activeItem.passport_number}</label>
+              {activeItem.personal_number && (
+                <>
+                  <label className="grid-item-key">Personal Number</label>
+                  <label className="grid-item">
+                    {activeItem.personal_number}
+                  </label>
+                </>
+              )}
+              {activeItem.passport_number && (
+                <>
+                  <label className="grid-item-key">Passport Number</label>
+                  <label className="grid-item">
+                    {activeItem.passport_number}
+                  </label>
+                </>
+              )}
 
               <label className="grid-item-key">First Name</label>
               <label className="grid-item">{activeItem.first_name}</label>
@@ -56,17 +77,43 @@ const ResultsContainer = ({ searchQuery, searchResults }) => {
               <label className="grid-item-key">Last Name</label>
               <label className="grid-item">{activeItem.last_name}</label>
 
+              {activeItem.type === "ID" && (
+                <>
+                  <label className="grid-item-key">Sex</label>
+                  <label className="grid-item">
+                    {activeItem.gender === "M" ? "Mashkull" : "Femer"}
+                  </label>
+                </>
+              )}
+
               <label className="grid-item-key">Birth Date</label>
-              <label className="grid-item">{activeItem.date_of_birth}</label>
-
-              <label className="grid-item-key">Place of Birth</label>
-              <label className="grid-item">{activeItem.place_of_birth}</label>
-
-              <label className="grid-item-key">Place of Living</label>
-              <label className="grid-item">{activeItem.place_of_living}</label>
+              <label className="grid-item">
+                {activeItem.type === "passport"
+                  ? activeItem.date_of_birth
+                  : activeItem.birth_date}
+              </label>
+              {activeItem.activeItem === "passport" && (
+                <>
+                  <label className="grid-item-key">Place of Birth</label>
+                  <label className="grid-item">
+                    {activeItem.place_of_birth}
+                  </label>
+                </>
+              )}
+              {activeItem.activeItem === "passport" && (
+                <>
+                  <label className="grid-item-key">Place of Living</label>
+                  <label className="grid-item">
+                    {activeItem.place_of_living}
+                  </label>
+                </>
+              )}
 
               <label className="grid-item-key">Phone Number</label>
               <label className="grid-item">{activeItem.phone_number}</label>
+
+              <label className="grid-item-key">Document</label>
+              <label className="grid-item">{activeItem.type}</label>
             </div>
           </>
         )}

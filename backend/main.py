@@ -37,8 +37,48 @@ app.add_middleware(
 
 models.Base.metadata.create_all(bind=engine)
 
+class IdSchema(BaseModel):
+    type: str
+    personal_number: str
+    card_number: int 
+
+    first_name: str
+    last_name: str
+    gender: str
+
+    birth_date: str
+    birth_place: str
+    issue_date: str
+    expiry_date: str
+
+    phone_number: int
+    photo:str
+    authority:str
+
+    @field_validator("birth_date", mode="before")
+    def format_birth_date(cls, value):
+        if isinstance(value, datetime):
+            return value.isoformat() 
+        return value
+
+    @field_validator("issue_date", mode="before")
+    def format_issue_date(cls, value):
+        if isinstance(value, datetime):
+            return value.isoformat() 
+        return value
+
+    @field_validator("expiry_date", mode="before")
+    def format_expiry_date(cls, value):
+        if isinstance(value, datetime):
+            return value.isoformat() 
+        return value
+
+    class Config:
+        orm_mode = True
+
 
 class PassportSchema(BaseModel):
+    type: str
     personal_number: str
     passport_number: str
     first_name: str
@@ -59,7 +99,7 @@ class PassportSchema(BaseModel):
         orm_mode = True
 
 
-@app.get("/", response_model=List[PassportSchema])
+@app.get("/", response_model=List[Union[PassportSchema, IdSchema]])
 async def search(
     search: str = Query(..., min_length=1, description="Search term"),
     passports: bool = Query(..., description="Include passports"),
@@ -97,10 +137,22 @@ async def search(
         results.extend(passports_result)
 
     if ids:
-        pass
+        id_filter = or_(
+            models.Id.personal_number.ilike(search_term),
+            func.lower(models.Id.card_number.cast(String)) == search_term,
+            models.Id.first_name.ilike(search_term),
+            models.Id.last_name.ilike(search_term),
+            func.lower(models.Id.birth_place).contains(search_term),
+            func.lower(models.Id.phone_number.cast(String)).contains(
+                search_term
+            ),
+        ) 
+        ids_result = db.query(models.Id).filter(id_filter).distinct(models.Id.card_number).all()
+        results.extend(ids_result)
 
     return results
 
 
 if __name__ == "__main__":
+    # Port 1234 for testing
     uvicorn.run("main:app", host="0.0.0.0", port=1111, reload=True)
