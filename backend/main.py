@@ -130,6 +130,7 @@ async def search(
             func.lower(models.Id.card_number.cast(String)) == search_term,
             models.Id.first_name.ilike(search_term),
             models.Id.last_name.ilike(search_term),
+            models.Id.authority.ilike(search_term),
             func.lower(models.Id.birth_place).contains(search_term),
             func.lower(models.Id.phone_number.cast(String)).contains(
                 search_term

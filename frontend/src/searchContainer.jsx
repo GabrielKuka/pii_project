@@ -1,6 +1,7 @@
 import "./searchcontainer.scss";
 import { useState } from "react";
 import axios from "axios";
+import searchService from "./services/searchService";
 
 const SearchContainer = ({
   fieldValue,
@@ -18,14 +19,9 @@ const SearchContainer = ({
       return;
     }
 
-    const response = await axios.get(
-      // Port 1234 for testing
-      `http://100.73.35.59:1111/?search=${fieldValue}&passports=${searchFilters.passports}&ids=${searchFilters.ids}`
-    );
-    if (response.status == 200) {
-      const data = response?.data?.sort((a, b) => (a.type > b.type ? 1 : -1));
-      setSearchResults(data);
-    }
+    let data = await searchService.search(fieldValue, searchFilters);
+    data = data?.sort((a, b) => (a.type > b.type ? 1 : -1));
+    setSearchResults(data);
   }
 
   async function handleKeyDown(e) {

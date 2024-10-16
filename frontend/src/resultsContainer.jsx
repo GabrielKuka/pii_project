@@ -47,7 +47,7 @@ const ResultsContainer = ({ searchQuery, searchResults }) => {
             </div>
           ))}
       </div>
-      <div id="left_pane">
+      <div id="right_pane">
         {activeItem && (
           <div id="selected_item_container">
             <img
@@ -99,7 +99,7 @@ const ResultsContainer = ({ searchQuery, searchResults }) => {
                   ? activeItem.date_of_birth
                   : activeItem.birth_date}
               </label>
-              {activeItem.activeItem === "passport" && (
+              {activeItem.type === "passport" && (
                 <>
                   <label className="grid-item-key">Place of Birth</label>
                   <label className="grid-item">
@@ -107,7 +107,7 @@ const ResultsContainer = ({ searchQuery, searchResults }) => {
                   </label>
                 </>
               )}
-              {activeItem.activeItem === "passport" && (
+              {activeItem.type === "passport" && (
                 <>
                   <label className="grid-item-key">Place of Living</label>
                   <label className="grid-item">
