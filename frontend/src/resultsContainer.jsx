@@ -13,13 +13,15 @@ const ResultsContainer = ({ searchQuery, searchResults }) => {
       <div id="left_pane_container">
         {searchResults && (
           <div id={"summary_card"}>
-            <label>{searchResults.length} total search results.</label>
-            <label>
-              {searchResults?.filter((i) => i.type === "passport").length}{" "}
-              passports found.
+            <label id="total_results_label">
+              {searchResults.length} total search results.
             </label>
             <label>
-              {searchResults?.filter((i) => i.type === "ID").length} ids found.
+              Passports:{" "}
+              {searchResults?.filter((i) => i.type === "passport").length}{" "}
+            </label>
+            <label>
+              IDs: {searchResults?.filter((i) => i.type === "ID").length}
             </label>
           </div>
         )}
@@ -45,9 +47,14 @@ const ResultsContainer = ({ searchQuery, searchResults }) => {
             </div>
           ))}
       </div>
-      <div id="selected_item_container">
+      <div id="left_pane">
         {activeItem && (
-          <>
+          <div id="selected_item_container">
+            <img
+              alt="user_icon"
+              id="user_icon"
+              src={process.env.PUBLIC_URL + "/picture.png"}
+            />
             <div className="grid-container">
               {activeItem.personal_number && (
                 <>
@@ -81,7 +88,7 @@ const ResultsContainer = ({ searchQuery, searchResults }) => {
                 <>
                   <label className="grid-item-key">Sex</label>
                   <label className="grid-item">
-                    {activeItem.gender === "M" ? "Mashkull" : "Femer"}
+                    {activeItem.gender === "M" ? "Male" : "Female"}
                   </label>
                 </>
               )}
@@ -109,13 +116,23 @@ const ResultsContainer = ({ searchQuery, searchResults }) => {
                 </>
               )}
 
+              {activeItem.type === "ID" && (
+                <>
+                  <label className="grid-item-key">ID Issue Date</label>
+                  <label className="grid-item">{activeItem.issue_date}</label>
+
+                  <label className="grid-item-key">ID Expiry Date</label>
+                  <label className="grid-item">{activeItem.expiry_date}</label>
+                </>
+              )}
+
               <label className="grid-item-key">Phone Number</label>
               <label className="grid-item">{activeItem.phone_number}</label>
 
               <label className="grid-item-key">Document</label>
               <label className="grid-item">{activeItem.type}</label>
             </div>
-          </>
+          </div>
         )}
       </div>
     </div>

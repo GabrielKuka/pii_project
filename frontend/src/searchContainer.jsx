@@ -22,7 +22,10 @@ const SearchContainer = ({
       // Port 1234 for testing
       `http://100.73.35.59:1111/?search=${fieldValue}&passports=${searchFilters.passports}&ids=${searchFilters.ids}`
     );
-    setSearchResults(response.data);
+    if (response.status == 200) {
+      const data = response?.data?.sort((a, b) => (a.type > b.type ? 1 : -1));
+      setSearchResults(data);
+    }
   }
 
   async function handleKeyDown(e) {

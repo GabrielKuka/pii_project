@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, date
 from typing import List, Union
 
 import uvicorn
@@ -55,22 +55,10 @@ class IdSchema(BaseModel):
     photo:str
     authority:str
 
-    @field_validator("birth_date", mode="before")
+    @field_validator("birth_date", "issue_date", "expiry_date", mode="before")
     def format_birth_date(cls, value):
         if isinstance(value, datetime):
-            return value.isoformat() 
-        return value
-
-    @field_validator("issue_date", mode="before")
-    def format_issue_date(cls, value):
-        if isinstance(value, datetime):
-            return value.isoformat() 
-        return value
-
-    @field_validator("expiry_date", mode="before")
-    def format_expiry_date(cls, value):
-        if isinstance(value, datetime):
-            return value.isoformat() 
+            return value.date().isoformat() 
         return value
 
     class Config:
@@ -92,7 +80,7 @@ class PassportSchema(BaseModel):
     @field_validator("date_of_birth", mode="before")
     def format_date_of_birth(cls, value):
         if isinstance(value, datetime):
-            return value.isoformat()
+            return value.date().isoformat()
         return value
 
     class Config:

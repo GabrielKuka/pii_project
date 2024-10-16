@@ -15,10 +15,13 @@
 
     #summary_card {
       color: gray;
-      text-decoration: underline;
       display: flex;
       flex-direction: column;
       gap: 10px;
+
+      #total_results_label {
+        text-decoration: underline;
+      }
     }
 
     .result_item,
@@ -42,33 +45,49 @@
       }
     }
   }
-  #selected_item_container {
+  #left_pane {
     position: sticky;
     top: 150px;
     margin-top: 20px;
     width: 50%;
 
-    .grid-container {
-      display: 1px solid #dadada;
+    #selected_item_container {
+      border: 1px solid #dadada;
       box-shadow: 3px 2px 8px #dadada;
       border-radius: 3px;
-      padding: 10px 5px;
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      margin: 0 15px 0 15px;
-      gap: 0px;
+      padding: 20px 0 20px 0;
+      display: flex;
+      gap: 30px;
+      justify-content: center;
+      align-items: center;
+
       transition: box-shadow 0.3s;
 
       &:hover {
         box-shadow: 4px 4px 14px #dadada;
       }
-
-      .grid-item {
-        margin: 0 0 10px 0;
+      #user_icon {
+        margin-left: 50px;
+        flex-basis: 20%;
+        width: 150px;
+        height: 200px;
       }
-      .grid-item-key {
-        text-align: right;
-        margin-right: 30%;
+
+      .grid-container {
+        flex-basis: 80%;
+        padding: 10px 5px;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        margin: 0 15px 0 15px;
+        gap: 0px;
+
+        .grid-item {
+          margin: 0 0 10px 0;
+        }
+        .grid-item-key {
+          text-align: right;
+          margin-right: 30%;
+        }
       }
     }
   }
